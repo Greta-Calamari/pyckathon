@@ -126,7 +126,7 @@ def chechLetter(e):
             custom_utils.writeToHtmlElement(word_html_container, '%s' % (display))
     else:
         count -= 1
-        custom_utils.writeToHtmlElement(word_html_container, '%s' % (display))
+        custom_utils.writeToHtmlElement(errors,'hai sbagliato ! Hai ancora %s tentativi' % (count))
     check = all(item in already_guessed for item in letters) 
     if(check == True):
         custom_utils.writeToConsole('hai vintooooo!')
