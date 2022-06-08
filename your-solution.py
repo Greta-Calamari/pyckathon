@@ -40,7 +40,8 @@ In entrambi i casi si deve mostrare un messaggio adatto alla situazione.
 
 #------------------------------------------LIBRERIE-------------------------------------------------------
 
-import random   #libreria per usare un valore casuale
+import random
+from tabnanny import check   #libreria per usare un valore casuale
 import pyodide  #libreria per pyscript
 import js       #libreria per javascript
 from utils import Utils #libreria per utilizzare funzioni JS
@@ -57,28 +58,99 @@ add_letter_btn = custom_utils.getHtmlElement("add-letter-btn")
 
 # questo elemento conterrà il testo segnaposto per la parola da indovinare
 word_html_container = custom_utils.getHtmlElement('word')
+errors = custom_utils.getHtmlElement('errors')
+used_letters = custom_utils.getHtmlElement('used_letters')
+result = custom_utils.getHtmlElement('result')
+solutions = custom_utils.getHtmlElement('solutions')
+
 
 #----------------------------------------------------------------------------------------------------
 
+        
 
 def main():
 
     #le variabili sono definite come esempi, non siete obbligati ad utilizzarle tutte o solo queste
 
     global words
-    global count
+    global count 
+    global errors
     global length
     global word
     global display
     global already_guessed
     global limit
+    global user_letters
+    global user_value
+    global letters
+
+    count = 5
+    errors = 0
+    display = ''
+    user_letters =[]
+    already_guessed=[]
+
+    
+
 
     
     words = ['matto', 'gatto', 'pazzo'] # array con le parole da indovinare
 
+    word = random.choice(words)
+
+    letters = list(word)
+    
+
+    for letter in letters:
+        display += "_"
+
     # inserisco la stringa segnaposto dentro il contenitore HTML
-    display = "___" # da modificare
+    # display = "___" # da modificare
     custom_utils.writeToHtmlElement(word_html_container, '%s' % (display))
+    
+
+def chechLetter(e):
+    global count
+
+    user_value = (getattr(user_letter,'value').lower())
+    user_letters.append(user_value)
+    custom_utils.writeToConsole(count)
+    if(user_value in letters):
+            already_guessed.append(user_value)
+            display=""
+            for letter in letters:
+                if(letter in already_guessed):
+                    display += letter
+                else:
+                    display += "_"
+            custom_utils.writeToHtmlElement(word_html_container, '%s' % (display))
+    else:
+        count -= 1
+        custom_utils.writeToHtmlElement(word_html_container, '%s' % (display))
+    check = all(item in already_guessed for item in letters) 
+    if(check == True):
+        custom_utils.writeToConsole('hai vintooooo!')
+        custom_utils.removeOnClickEventFromHtmlElement(add_letter_btn)
+        return
+    if(count == 0):
+        custom_utils.writeToConsole('hai persooooo!')
+        custom_utils.removeOnClickEventFromHtmlElement(add_letter_btn)
+        return
+    
+# custom_utils.writeToHtmlElement(word_html_container, '%s' % (display))
+
+custom_utils.addOnClickEventToHtmlElement(add_letter_btn,chechLetter)
+
+
+
+    
+   
+
+    
+
+
+
+    
 
 
 main()
